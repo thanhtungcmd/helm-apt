@@ -1,0 +1,14 @@
+version: "3"
+services:
+  # Nginx
+  nginx:
+    build: ./nginx
+    container_name: appotapay-nginx
+
+  php:
+    build: ./php
+    container_name: appotapay-php
+
+  mariadb:
+    build: ./mariadb
+    container_name: appotapay-mariadb

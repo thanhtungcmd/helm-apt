@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: php-cronjob
+  labels:
+    chart: appotapay
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: php-cronjob
+              image: appotapay-php:latest
+              imagePullPolicy: IfNotPresent
+              args:
+                - /bin/sh
+                - -c
+                - date; echo "Job in CronJob"
+          restartPolicy: OnFailure
+  schedule: "* * * * *"

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpfpm-deployment
+  labels:
+    chart: appotapay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpfpm-deployment
+  template:
+    metadata:
+      labels:
+        app: phpfpm-deployment
+    spec:
+      containers:
+        - name: phpfpm
+          image: appotapay-php:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9000
+          readinessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          volumeMounts:
+            - mountPath: /var/www/code/.env
+              subPath: .env
+              name: php-config
+      volumes:
+        - name: php-config
+          configMap:
+            name: php-configmap
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    chart: appotapay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-deployment
+  template:
+    metadata:
+      labels:
+        app: nginx-deployment
+    spec:
+      containers:
+        - name: nginx
+          image: appotapay-nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-volume
+            - mountPath: /var/log/nginx
+              name: nginx-log
+      volumes:
+        - name: nginx-volume
+          configMap:
+            name: nginx-configmap
+        - name: nginx-log
+          hostPath:
+            path: /data/log
