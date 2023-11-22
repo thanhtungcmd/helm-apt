@@ -18,11 +18,11 @@ function nginx() {
 function php() {
     result=$(cp -r $(pwd)/code $(pwd)/php/code)
     echo "$result"
-    result=$(docker build -t appotapay-php $(pwd)/php/)
+    result=$(docker build -t appotapay-php:1.0 $(pwd)/php/)
     echo "$result"
     result=$(rm -rf $(pwd)/php/code)
     echo "$result"
-    result=$(minikube image load appotapay-php)
+    result=$(minikube image load appotapay-php:1.0)
     echo "$result"
 }
 

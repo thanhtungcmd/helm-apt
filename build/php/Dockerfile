@@ -51,9 +51,7 @@ RUN useradd -ms /bin/bash myuser
 RUN chown -R myuser:myuser /var/www/code
 # Chuyển đổi sang người dùng không phải root
 USER myuser
-RUN cd /var/www/code \
-    rm -rf vendor \
-    composer install
+RUN cd /var/www/code && composer install
 
 WORKDIR /var/www
 
