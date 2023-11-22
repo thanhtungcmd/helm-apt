@@ -1,14 +1,107 @@
 version: "3"
 services:
-  # Nginx
+  #Registry
+  registry:
+    image: registry:2.7
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./registry/lib:/var/lib/registry
+
+  # Web
   nginx:
     build: ./nginx
-    container_name: appotapay-nginx
+    volumes:
+      - /Users/tungbt/Code/Appota/appotapay-cms:/var/www/appotapay-cms
+      - /Users/tungbt/Code/Appota/appotapay-payment-gateway:/var/www/appotapay-payment-gateway
+      - /Users/tungbt/Code/Appota/appotapay-partner-website:/var/www/appotapay-partner-website
+      - /Users/tungbt/Code/Appota/appotapay-partner-apis:/var/www/appotapay-partner-apis
+      - /Users/tungbt/Code/OS/dream-paladin:/var/www/dream-paladin
+      - /Users/tungbt/Code/Appota/temp-app:/var/www/temp-app
+      # Logs
+      - ./nginx/log:/var/log/nginx
+    extra_hosts:
+      - "appotapay-payment-gateway.test:192.168.103.235"
+      - "appotapay-partner-apis.test:192.168.103.235"
+      - "appotapay-partner-website.test:192.168.103.235"
+      - "appotapay-cms.test:192.168.103.235"
+    ports:
+      - "80:80"
+      - "81:81"
+    networks:
+      - all
 
+  php81:
+    build: ./php81
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /Users/tungbt/Code/OS/dream-paladin:/var/www/dream-paladin
+      # Logs
+      - ./php81/log:/var/log/php
+    networks:
+      - all
+
+  # PHP
   php:
     build: ./php
-    container_name: appotapay-php
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "appotapay-payment-gateway.test:192.168.103.235"
+      - "appotapay-partner-apis.test:192.168.103.235"
+      - "appotapay-partner-website.test:192.168.103.235"
+      - "appotapay-cms.test:192.168.103.235"
+    volumes:
+      - /Users/tungbt/Code/Appota/appotapay-cms:/var/www/appotapay-cms
+      - /Users/tungbt/Code/Appota/appotapay-payment-gateway:/var/www/appotapay-payment-gateway
+      - /Users/tungbt/Code/Appota/appotapay-partner-website:/var/www/appotapay-partner-website
+      - /Users/tungbt/Code/Appota/appotapay-partner-apis:/var/www/appotapay-partner-apis
+      - /Users/tungbt/Code/Appota/temp-app:/var/www/temp-app
+      # Logs
+      - ./php/log:/var/log/php
+    networks:
+      - all
 
+  # Mysql
+  mysql:
+    build: ./mysql
+    environment:
+      - MYSQL_USER=tungbt
+      - MYSQL_PASSWORD=12345678
+      - MYSQL_ROOT_PASSWORD=12345678
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - all
+
+  # Mariadb
   mariadb:
     build: ./mariadb
-    container_name: appotapay-mariadb
+    environment:
+      - MARIADB_USER=tungbt
+      - MARIADB_PASSWORD=12345678
+      - MARIADB_ROOT_PASSWORD=12345678
+      - MARIADB_ROOT_HOST=%
+    volumes:
+      - ./mariadb/data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - all
+
+  # Redis
+  redis:
+    build: ./redis
+    volumes:
+      - ./redis/data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - all
+
+networks:
+  all:
+    driver: bridge
