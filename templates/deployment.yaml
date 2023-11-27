@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: phpfpm
-          image: appotapay-php:latest
+          image: appotapay-php:1.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9000
