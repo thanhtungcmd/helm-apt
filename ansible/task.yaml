@@ -1,0 +1,15 @@
+---
+
+- name: Simple 01
+  hosts: all
+
+  tasks:
+    - name: Install Sysstat
+      apt:
+        name: sysstat
+        state: present
+
+    - name: Install php
+      apt:
+        name: php
+        state: present
