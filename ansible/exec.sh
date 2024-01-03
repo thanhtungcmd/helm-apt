@@ -8,4 +8,7 @@ if [ $1 == "simple" ]; then
 elif [ $1 == "iptable" ]; then
   result=$(ansible-playbook -i inventory iptable.yaml)
   echo "$result"
+elif [ $1 == "openvpn" ]; then
+  result=$(ansible-playbook -i inventory openvpn.yaml)
+  echo "$result"
 fi

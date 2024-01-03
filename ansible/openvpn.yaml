@@ -1,0 +1,62 @@
+---
+- name: OpenVPN
+  hosts: all
+
+  task:
+    - name: Installing openvpn
+      apt:
+        name: openvpn
+        state: present
+
+    - name: Verifying EasyRsa exist
+      stat:
+        path: /etc/openvpn/easy-rsa/easyrsa
+      register: rsa
+
+    - name: Installing EasyRsa
+      apt:
+        name: easy-rsa
+        state: present
+
+    - name: Creating OpenVPN Client certificate and key pair
+      command: make-cadir ~/easy-rsa
+
+    - name: Creating pki directory
+      command: ./easyrsa init-pki
+      args:
+        chdir: ~/easy-rsa
+        creates: ~/easy-rsa/pki
+
+    - name: Creating Certificate Authority
+      command: ./easyrsa --batch build-ca nopass
+      args:
+        chdir: ~/easy-rsa
+        creates: ~/easy-rsa/pki/ca.crt
+
+    - name: Creating Diffie Hellman certificate
+      command: ./easyrsa gen-dh
+      args:
+        chdir: ~/easy-rsa/easy-rsa/
+        creates: ~/easy-rsa/pki/dh.pem
+
+    - name: Creating OpenVPN certificate and key pair
+      command: ./easyrsa build-server-full server-name nopass
+      args:
+        chdir: ~/easy-rsa
+        creates: ~/easy-rsa/pki/issued/server-name.crt
+
+    - name: Generating an HMAC signature to strengthen the server's TLS integrity verification capabilities
+      command: openvpn --genkey --secret /etc/openvpn/ta.key
+      args:
+        chdir: ~/easy-rsa
+        creates: /etc/openvpn/ta.key
+
+    - name: Copying keys to openvpn directory
+      copy:
+        src: "{{ item }}"
+        dest: /etc/openvpn
+      with_items:
+        - ~/easy-rsa/pki/ca.crt
+        - ~/easy-rsa/pki/issued/server-name.crt
+        - ~/easy-rsa/pki/private/server-name.key
+        - ~/easy-rsa/pki/dh.pem
