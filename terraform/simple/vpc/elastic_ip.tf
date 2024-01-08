@@ -1,5 +1,5 @@
 resource "aws_eip" "nat_eip" {
-  vpc_id = aws_vpc.vpc.id
+  domain = "vpc"
   depends_on = [
     aws_internet_gateway.vpc_gateway
   ]
