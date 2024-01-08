@@ -32,5 +32,5 @@ module "instance" {
   security_group_ids = [
     module.vpc.security_group_id
   ]
-  ssk_key_name = "ins01"
+  ssh_key_name = "ins01"
 }
