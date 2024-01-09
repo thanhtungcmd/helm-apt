@@ -16,4 +16,7 @@ elif [ $1 == "show" ]; then
 elif [ $1 == "apply" ]; then
   result=$(terraform apply)
   echo "$result"
+elif [ $1 == "destroy" ]; then
+  result=$(terraform destroy)
+  echo "$result"
 fi
