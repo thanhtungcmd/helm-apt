@@ -14,9 +14,9 @@ elif [ $1 == "show" ]; then
   result=$(terraform show -no-color plan.tfout > plan.txt)
   echo "$result"
 elif [ $1 == "apply" ]; then
-  result=$(terraform apply)
+  result=$(terraform apply -auto-approve)
   echo "$result"
 elif [ $1 == "destroy" ]; then
-  result=$(terraform destroy)
+  result=$(terraform destroy -auto-approve)
   echo "$result"
 fi
