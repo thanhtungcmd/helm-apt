@@ -6,6 +6,6 @@ resource "aws_instance" "bastion_host" {
   key_name = var.ssh_key_name
 
   tags = {
-    Name = "example_app_server_instance"
+    Name = "bastion_host_instance"
   }
 }
