@@ -22,7 +22,7 @@ resource "aws_network_acl" "public" {
 }
 
 resource "aws_network_acl_association" "public" {
-  count = length(data.aws_availability_zones.available.zone_ids)
+  count = length(local.availability_zones)
   subnet_id = element(aws_subnet.private_subnet.*.id, count.index)
   network_acl_id = aws_network_acl.public.id
 }
@@ -60,7 +60,7 @@ resource "aws_network_acl" "private" {
 }
 
 resource "aws_network_acl_association" "private" {
-  count = length(data.aws_availability_zones.available.zone_ids)
+  count = length(local.availability_zones)
   subnet_id = element(aws_subnet.private_subnet.*.id, count.index)
   network_acl_id = aws_network_acl.private.id
 }

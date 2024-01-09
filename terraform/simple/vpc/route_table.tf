@@ -14,7 +14,7 @@ resource "aws_route" "public_internet_gateway" {
 
 resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.vpc_public_route_table.id
-  count = length(data.aws_availability_zones.available.zone_ids)
+  count = length(local.availability_zones)
   subnet_id = element(aws_subnet.public_subnet.*.id, count.index)
 }
 
@@ -34,6 +34,6 @@ resource "aws_route" "private_nat_gateway" {
 
 resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.vpc_private_route_table.id
-  count = length(data.aws_availability_zones.available.zone_ids)
+  count = length(local.availability_zones)
   subnet_id = element(aws_subnet.private_subnet.*.id, count.index)
 }

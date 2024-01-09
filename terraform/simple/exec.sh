@@ -9,9 +9,7 @@ elif [ $1 == "validate" ]; then
   result=$(terraform validate)
   echo "$result"
 elif [ $1 == "show" ]; then
-  result=$(terraform plan -out=plan.tfout)
-  echo "$result"
-  result=$(terraform show -no-color plan.tfout > plan.txt)
+  result=$(terraform plan -no-color -out=plan.tfout > plan.txt)
   echo "$result"
 elif [ $1 == "apply" ]; then
   result=$(terraform apply -auto-approve)
