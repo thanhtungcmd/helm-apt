@@ -2,8 +2,12 @@ output "vpc_id" {
   value = aws_vpc.vpc.id
 }
 
-output "security_group_id" {
-  value = aws_security_group.allow_ssh.id
+output "public_security_group_id" {
+  value = aws_security_group.public.id
+}
+
+output "private_security_group_id" {
+  value = aws_security_group.private.id
 }
 
 output "public_subnet_id" {

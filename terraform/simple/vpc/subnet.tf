@@ -1,3 +1,4 @@
+# Public Subnet
 resource "aws_subnet" "public_subnet" {
   vpc_id = aws_vpc.vpc.id
   count = length(local.availability_zones)
@@ -9,6 +10,7 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
+# Private Subnet
 resource "aws_subnet" "private_subnet" {
   vpc_id = aws_vpc.vpc.id
   count = length(local.availability_zones)
