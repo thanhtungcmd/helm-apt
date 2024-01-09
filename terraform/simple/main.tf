@@ -21,6 +21,18 @@ output "public_subnets_ids" {
   value = module.vpc.public_subnet_id
 }
 
+################################################################################
+# Bastion Host
+################################################################################
+module "bastion" {
+  source = "./bastion_host"
+
+  subnet_id = module.vpc.public_subnet_id[0]
+  security_group_ids = [
+    module.vpc.security_group_id
+  ]
+  ssh_key_name = "bastion"
+}
 
 ################################################################################
 # EC2 Instance
